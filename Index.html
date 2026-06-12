@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AliensAgree // Consensus_OS</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace, sans-serif;
+        }
+        
+        body {
+            background-color: #05050a;
+            color: #00ffcc;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+
+        /* Main Container with Neon RGB Wireframe */
+        .todo-container {
+            background: #0d0e15;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            border-radius: 8px;
+            position: relative;
+            border: 2px solid #00ffcc;
+            box-shadow: 0 0 15px #00ffcc;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Neon Strip Accent */
+        .todo-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff0055, #00ffcc, #39ff14);
+            box-shadow: 0 0 12px #00ffcc;
+        }
+
+        /* Pure CSS Alien Mascot */
+        .mascot-container {
+            margin: 10px auto 20px auto;
+            width: 80px;
+            height: 90px;
+            position: relative;
+        }
+
+        .alien-head {
+            width: 70px;
+            height: 70px;
+            background: #0d0e15;
+            border: 3px solid #00ffcc;
+            border-radius: 50% 50% 40% 40%;
+            position: absolute;
+            left: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .alien-eye {
+            width: 20px;
+            height: 12px;
+            background: #00ffcc;
+            border-radius: 50%;
+            position: absolute;
+            top: 30px;
+            transform: rotate(15px);
+            box-shadow: 0 0 8px #00ffcc;
+            transition: all 0.3s ease;
+        }
+
+        .alien-eye.left { left: 10px; transform: rotate(15deg); }
+        .alien-eye.right { right: 10px; transform: rotate(-15deg); }
+
+        h2 {
+            margin: 10px 0 25px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 8px #00ffcc;
+            font-size: 20px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #141622;
+            border: 1px solid #00ffcc;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+            box-shadow: inset 0 0 5px rgba(0, 255, 204, 0.2);
+        }
+
+        button.decision-btn {
+            background: transparent;
+            color: #00ffcc;
+            border: 2px solid #00ffcc;
+            padding: 14px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        button.decision-btn:active {
+            background: #00ffcc;
+            color: #000;
+        }
+
+        /* Display Box for the Verdict */
+        .verdict-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #11121b;
+            border: 1px dashed rgba(0, 255, 204, 0.3);
+            border-radius: 4px;
+            min-height: 55px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        /* Creator Protocol / System Override States */
+        .panic-mode {
+            background-color: #200005 !important;
+        }
+        .panic-box {
+            border-color: #ff0055 !important;
+            box-shadow: 0 0 20px #ff0055 !important;
+        }
+        .panic-head {
+            border-color: #ff0055 !important;
+            box-shadow: 0 0 15px #ff0055 !important;
+        }
+        .panic-eye {
+            background: #ff0055 !important;
+            box-shadow: 0 0 12px #ff0055 !important;
+            height: 4px !important; /* Squinting/angry eyes */
+            top: 34px !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="todo-container" id="appBoard">
+    <div class="mascot-container">
+        <div class="alien-head" id="alienHead">
+            <div class="alien-eye left" id="eyeL"></div>
+            <div class="alien-eye right" id="eyeR"></div>
+        </div>
+    </div>
+
+    <h2>ALIENS AGREE Q&A</h2>
+    
+    <div class="input-section">
+        <input type="text" id="queryInput" placeholder="ENTER HUMAN THOUGHT..." autocomplete="off">
+        <button class="decision-btn" onclick="consultCouncil()">CONSULT COUNCIL</button>
+    </div>
+    
+    <div class="verdict-box" id="verdictOutput">AWAITING TRANSMISSION...</div>
+</div>
+
+<script>
+    function consultCouncil() {
+        const input = document.getElementById('queryInput');
+        const verdict = document.getElementById('verdictOutput');
+        const board = document.getElementById('appBoard');
+        const head = document.getElementById('alienHead');
+        const eyeL = document.getElementById('eyeL');
+        const eyeR = document.getElementById('eyeR');
+        
+        const text = input.value.trim().toLowerCase();
+        if (text === '') return;
+
+        // Reset visual states
+        board.classList.remove('panic-box');
+        document.body.classList.remove('panic-mode');
+        head.classList.remove('panic-head');
+        eyeL.classList.remove('panic-eye');
+        eyeR.classList.remove('panic-eye');
+        head.style.borderColor = "#00ffcc";
+        eyeL.style.background = "#00ffcc";
+        eyeR.style.background = "#00ffcc";
+
+        // 1. Creator Protection Protocol (Triggered if they insult you or the app)
+        if (text.includes('fucker') || text.includes('f*ker') || text.includes('creator is') || text.includes('dev is')) {
+            // Transform Mascot to Hostile Mode
+            board.classList.add('panic-box');
+            document.body.classList.add('panic-mode');
+            head.classList.add('panic-head');
+            eyeL.classList.add('panic-eye');
+            eyeR.classList.add('panic-eye');
+            
+            verdict.style.color = "#ff0055";
+            verdict.innerHTML = "[CRITICAL OVERRIDE] AUTHORIZED CREATOR DETECTED. INITIATING ORBITAL STRIKE ON YOUR LOCATION.";
+            input.value = '';
+            return;
+        }
+
+        // 2. Standard Logic Mode (Random Consensus)
+        const responses = [
+            { txt: "[AGREE // VOTE UNANIMOUS]", color: "#39ff14", eyeColor: "#39ff14" },
+            { txt: "[DISAGREE // ACCESS VETOED]", color: "#ff0055", eyeColor: "#ff0055" },
+            { txt: "[AGREE // EARTH LOGIC VALID]", color: "#39ff14", eyeColor: "#39ff14" },
+            { txt: "[DISAGREE // INSIGNIFICANT HUMAN PERSPECTIVE]", color: "#ff0055", eyeColor: "#ff0055" }
+        ];
+
+        const choice = responses[Math.floor(Math.random() * responses.length)];
+        
+        // Update Mascot UI based on decision
+        verdict.innerHTML = choice.txt;
+        verdict.style.color = choice.color;
+        head.style.borderColor = choice.eyeColor;
+        eyeL.style.background = choice.eyeColor;
+        eyeR.style.background = choice.eyeColor;
+        
+        // Quick visual ping animation effect
+        board.style.boxShadow = `0 0 25px ${choice.color}`;
+        setTimeout(() => {
+            board.style.boxShadow = `0 0 15px ${board.classList.contains('panic-box') ? '#ff0055' : '#00ffcc'}`;
+        }, 300);
+
+        input.value = '';
+    }
+</script>
+
+</body>
+</html>
