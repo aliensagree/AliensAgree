@@ -3,6 +3,427 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Cosmic Council Q&A</title>
+    <style>
+        :root {
+            --bg-color: #0d0e15;
+            --panel-bg: rgba(20, 24, 38, 0.9);
+            --primary-glow: #00ffcc;
+            --text-color: #ffffff;
+            --border-color: #1f293d;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* Ambient Chaos Canvas */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.15;
+            transition: opacity 0.5s;
+        }
+
+        /* Main App Container */
+        .app-container {
+            background: var(--panel-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.7);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        /* The Alien Mascot Box */
+        .mascot-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .alien-eyes {
+            display: flex;
+            justify-content: space-between;
+            width: 80px;
+            position: absolute;
+            top: 55px;
+            left: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .eye {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-glow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pupil {
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border-radius: 50%;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            transition: all 0.1s ease;
+        }
+
+        /* UI Inputs */
+        input[type="text"] {
+            width: 85%;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #334155;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            border: 2px solid var(--border-color);
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-glow);
+        }
+
+        /* Output Screens */
+        .console-screen {
+            background: #05070c;
+            border: 1px solid #1e293b;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            min-height: 60px;
+            text-align: left;
+            font-size: 14px;
+            color: #38bdf8;
+            overflow-y: auto;
+            max-height: 120px;
+        }
+
+        /* Massive Feature: Live Data Bloat Stream */
+        .data-bloat-ticker {
+            font-size: 10px;
+            color: #475569;
+            margin-top: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Hidden Dev Panel (Toggled via cheat code) */
+        #hiddenDevPanel {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px dashed #ff0055;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        /* Dynamic System States */
+        .state-happy {
+            --primary-glow: #00ff66;
+            --border-color: #00ff66;
+            box-shadow: 0 0 35px rgba(0, 255, 102, 0.4);
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        .state-crazy {
+            --primary-glow: #ff0055;
+            --border-color: #ff0055;
+            box-shadow: 0 0 50px rgba(255, 0, 85, 0.8);
+            animation: shake 0.1s infinite;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(2px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="app-container" id="mainContainer">
+        <div class="mascot-container">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <path id="alienHead" d="M20,40 Q50,10 80,40 Q90,70 50,90 Q10,70 20,40 Z" fill="#1e293b" stroke="var(--border-color)" stroke-width="3"/>
+            </svg>
+            <div class="alien-eyes" id="alienEyes">
+                <div class="eye"><div class="pupil"></div></div>
+                <div class="eye"><div class="pupil"></div></div>
+            </div>
+        </div>
+
+        <h2 id="appTitle">🛸 Cosmic Council Oracle</h2>
+        <p style="font-size: 13px; color: #94a3b8;">Speak to the system. It judges your energy.</p>
+
+        <input type="text" id="userInput" placeholder="Ask or say anything to the council..." onkeydown="if(event.key === 'Enter') processInput()">
+        <br>
+        <button onclick="processInput()">Submit Transmission</button>
+
+        <div class="console-screen" id="consoleOutput">
+            [SYSTEM READY]: Awaiting user input frequencies...
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 11px; color: #64748b;">
+            <span>Mood Intensity: <b id="moodStat">0%</b></span>
+            <span>Quantum Sync: <b id="syncStat">98.4%</b></span>
+            <span>Sub-space Ping: <b id="pingStat">12ms</b></span>
+        </div>
+
+        <div class="data-bloat-ticker" id="bloatTicker">Initializing background diagnostics stream...</div>
+
+        <div id="hiddenDevPanel">
+            <h4>[SECRET DEV MODE ENABLED]</h4>
+            <p>Hidden Parameters Unlocked. Internal Memory Allocated.</p>
+            <button onclick="triggerShockValue()">Force Max Shock Shockwave</button>
+            <button onclick="resetApp()">Emergency Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // Memory variables tracking emotional spectrums
+        let positivityScore = 0;
+        let negativityScore = 0;
+        let totalInputsProcessed = 0;
+        let secretCodeBuffer = "";
+
+        // Keywords for dynamic mood tracking
+        const goodWords = ['good', 'great', 'awesome', 'amazing', 'happy', 'love', 'nice', 'best', 'beautiful', 'cool', 'perfect', 'friend'];
+        const badWords = ['bad', 'hate', 'crazy', 'destroy', 'terrible', 'worst', 'kill', 'shock', 'broken', 'wrong', 'stupid', 'ugly'];
+
+        // Track eye movement to follow mouse cursor (Interactive feature)
+        document.addEventListener('mousemove', (e) => {
+            const pupils = document.querySelectorAll('.pupil');
+            pupils.forEach(pupil => {
+                const rect = pupil.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / window.innerWidth * 15;
+                const y = (e.clientY - rect.top) / window.innerHeight * 15;
+                pupil.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        // Background canvas data streams
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        let columns = Math.floor(width / 20);
+        const drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(13, 14, 21, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Color shifts depending on current app state
+            if(document.getElementById('mainContainer').classList.contains('state-crazy')) {
+                ctx.fillStyle = '#ff0055';
+            } else if(document.getElementById('mainContainer').classList.contains('state-happy')) {
+                ctx.fillStyle = '#00ff66';
+            } else {
+                ctx.fillStyle = '#00ffcc';
+            }
+            
+            ctx.font = '15px Courier New';
+            for (let i = 0; i < drops.length; i++) {
+                const text = String.fromCharCode(Math.floor(Math.random() * 128));
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+
+        // Continuous Useless Data Stream generator
+        setInterval(() => {
+            const uselessLogs = [
+                "Cleaning cache registries...", "Syncing dark matter buffers...", 
+                "Recalibrating alien sensor matrices...", "Bypassing mainstream firewalls...",
+                "Generating simulated megabytes...", "Hashing cosmic metadata strings..."
+            ];
+            document.getElementById('bloatTicker').innerText = `[LOG]: ${uselessLogs[Math.floor(Math.random() * uselessLogs.length)]} -> Ox${Math.random().toString(16).substr(2, 8).toUpperCase()}`;
+            document.getElementById('pingStat').innerText = Math.floor(Math.random() * 40 + 5) + "ms";
+        }, 2000);
+
+        // Core processing machine
+        function processInput() {
+            const inputField = document.getElementById('userInput');
+            const text = inputField.value.trim().toLowerCase();
+            const container = document.getElementById('mainContainer');
+            const output = document.getElementById('consoleOutput');
+            const eyes = document.getElementById('alienEyes');
+
+            if (!text) return;
+
+            totalInputsProcessed++;
+            
+            // Check for secret developer mode keyword
+            if(text === "devmode101") {
+                document.getElementById('hiddenDevPanel').style.display = 'block';
+                output.innerHTML = "[SYSTEM ENGAGED]: Hidden developer sub-routines exposed.";
+                inputField.value = "";
+                return;
+            }
+
+            // Evaluate text mood
+            let foundGood = goodWords.some(word => text.includes(word));
+            let foundBad = badWords.some(word => text.includes(word));
+
+            if (foundGood) {
+                positivityScore += 20;
+                negativityScore = Math.max(0, negativityScore - 15);
+            }
+            if (foundBad) {
+                negativityScore += 25;
+                positivityScore = Math.max(0, positivityScore - 15);
+            }
+
+            // Cap levels
+            positivityScore = Math.min(positivityScore, 100);
+            negativityScore = Math.min(negativityScore, 100);
+
+            // Handle the UI transformations based on cumulative scores
+            if (positivityScore >= 60) {
+                container.className = "app-container state-happy";
+                document.getElementById('appTitle').innerText = "😇 Ecstatic Council";
+                output.innerHTML = `[COUNCIL APPROVAL]: The cosmic vibrations are beautiful. Your phrases radiate joy. Evolution optimized.`;
+                document.getElementById('moodStat').innerText = "+" + positivityScore + "%";
+                eyes.style.transform = "scaleY(1.2)";
+            } 
+            else if (negativityScore >= 60) {
+                container.className = "app-container state-crazy";
+                document.getElementById('appTitle').innerText = "🚨 MALFUNCTIONING COUNCIL";
+                output.innerHTML = `[CRITICAL THREAT]: MALICIOUS MATRIX ENERGY INITIATED. WARNING: DESTRUCTION PROTOCOLS ACTIVE. STOP SAYING WRONG PHRASES.`;
+                document.getElementById('moodStat').innerText = "-" + negativityScore + "%";
+                eyes.style.transform = "scaleY(0.3) rotate(15deg)";
+                
+                // Add absolute surprise value
+                if (negativityScore >= 90) {
+                    triggerShockValue();
+                }
+            } 
+            else {
+                // Neutral state responses
+                container.className = "app-container";
+                document.getElementById('appTitle').innerText = "🛸 Cosmic Council Oracle";
+                document.getElementById('moodStat').innerText = "0%";
+                eyes.style.transform = "scaleY(1)";
+                
+                const responses = [
+                    "[DECISION PENDING]: The Council requests further elaborate variables.",
+                    "[AMBIVALENT]: Cosmic vectors point to unknown dimensional alignment.",
+                    "[DATA PARSING]: Analyzing transmission intent..."
+                ];
+                output.innerHTML = responses[Math.floor(Math.random() * responses.length)];
+            }
+
+            inputField.value = "";
+        }
+
+        // Maximized Dramatic Shock Feature
+        function triggerShockValue() {
+            const canvasElement = document.getElementById('matrixCanvas');
+            canvasElement.style.opacity = "0.8";
+            
+            let counter = 5;
+            const container = document.getElementById('mainContainer');
+            container.className = "app-container state-crazy";
+            
+            const shockInterval = setInterval(() => {
+                document.getElementById('consoleOutput').innerHTML = `⚠️ [SHOCK SECTOR OVERLOAD]: ENTIRE SYSTEM CORRUPTION IN ${counter} SECONDS. PURGING HOST LOGIC...`;
+                document.body.style.backgroundColor = counter % 2 === 0 ? "#ff0055" : "#000";
+                counter--;
+                
+                if(counter < 0) {
+                    clearInterval(shockInterval);
+                    document.getElementById('consoleOutput').innerHTML = `💥 [SYSTEM OVERLOADED]: Fatal exception. Your device's fictional containment layer failed.`;
+                    document.body.style.backgroundColor = "#0d0e15";
+                    canvasElement.style.opacity = "0.15";
+                    resetApp();
+                }
+            }, 600);
+        }
+
+        function resetApp() {
+            positivityScore = 0;
+            negativityScore = 0;
+            const container = document.getElementById('mainContainer');
+            container.className = "app-container";
+            document.getElementById('appTitle').innerText = "🛸 Cosmic Council Oracle";
+            document.getElementById('moodStat').innerText = "0%";
+            document.getElementById('alienEyes').style.transform = "scaleY(1)";
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AliensAgree // Consensus_OS</title>
     <style>
         * {
